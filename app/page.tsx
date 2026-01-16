@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import dynamic from "next/dynamic"
+import { useAuth } from "@/context/AuthContext"
 
 const LandingPage = dynamic(() => import("@/components/landing-page"), { ssr: true })
 const DashboardPage = dynamic(() => import("@/components/dashboard-page"), { ssr: true })
@@ -10,6 +11,13 @@ const ProjectEditor = dynamic(() => import("@/components/project-editor"), { ssr
 
 export default function Home() {
   const [currentView, setCurrentView] = useState<"landing" | "dashboard" | "client" | "project-editor">("landing")
+  const { user, loading } = useAuth()
+
+  useEffect(() => {
+    if (!loading && user) {
+      setCurrentView("dashboard")
+    }
+  }, [user, loading])
 
   return (
     <div className="min-h-screen bg-background">
